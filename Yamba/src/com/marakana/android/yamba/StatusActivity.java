@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -31,15 +32,11 @@ public class StatusActivity extends Activity {
         protected Integer doInBackground(String... statusMsg) {
             int msg = R.string.post_failed;
             try {
-                try { Thread.sleep(5 * 60 * 1000); }
-                catch (InterruptedException e) { }
-
                 yamba.postStatus(statusMsg[0]);
-
                 msg = R.string.post_succeeded;
             }
             catch (YambaClientException e) {
-                Log.e(TAG, "Post failed: ", e);
+                Log.e(TAG, "Post failed: " + e, e);
             }
 
             return Integer.valueOf(msg);
@@ -52,10 +49,13 @@ public class StatusActivity extends Activity {
     }
 
 
-    private YambaClient yamba;
+     YambaClient yamba;
+
+    private Poster poster;
 
     private TextView count;
     private EditText status;
+    private Button submit;
 
     private int okColor;
     private int warnColor;
@@ -73,8 +73,8 @@ public class StatusActivity extends Activity {
 
         yamba = new YambaClient("student", "password", "http://yamba.marakana.com/api");
 
-        Button button = (Button) findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
+        submit = (Button) findViewById(R.id.button1);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { postStatus(); }
         });
@@ -96,14 +96,19 @@ public class StatusActivity extends Activity {
 
     public void postComplete(int msg) {
         Toast.makeText(StatusActivity.this, msg, Toast.LENGTH_LONG).show();
-        // clear edit text if msg is good...
+        poster = null;
+        submit.setEnabled(true);
     }
 
     void postStatus() {
-        // get status string from status Edit Text
-        // post to net
+        String statusMsg = status.getText().toString();
+        if (TextUtils.isEmpty(statusMsg)) { return; }
 
-        new Poster().execute(status.getText().toString());
+        if (null != poster) { return; }
+        poster = new Poster();
+        submit.setEnabled(false);
+
+        poster.execute(statusMsg);
     }
 
     void updateCount() {
