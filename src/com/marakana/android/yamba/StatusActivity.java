@@ -13,6 +13,8 @@ public class StatusActivity extends Activity {
   private final String LOG_TAG = "Blake";
 
   private int statusMax;
+  private int statusWarn;
+  private int statusErr;
   private int green;
   private int yellow;
   private int red;
@@ -27,9 +29,13 @@ public class StatusActivity extends Activity {
     setContentView(R.layout.activity_status);
 
     statusMax = Integer.parseInt(getResources().getString(R.string.status_max));
+    statusWarn = Integer.parseInt(getResources().getString(R.string.status_warn));
+    statusErr = Integer.parseInt(getResources().getString(R.string.status_err));
+
     green = getResources().getColor(R.color.green);
     yellow = getResources().getColor(R.color.yellow);
     red = getResources().getColor(R.color.red);
+
     count = (TextView) findViewById(R.id.status_count);
     status = (TextView) findViewById(R.id.status_text);
 
@@ -51,10 +57,17 @@ public class StatusActivity extends Activity {
     });
   }
 
+  /**
+   * Makes the count text view reflect the number of characters in the status text view, coloring it
+   * with the following scheme:
+   * - Green for greater than statusWarn
+   * - Yellow for greater than statusErr
+   * - Red otherwise
+   */
   private void updateCount() {
     int newCount = statusMax - status.getText().length();
     count.setText(String.valueOf(newCount));
-    count.setTextColor(newCount > 10 ? green : newCount > 0 ? yellow : red);
+    count.setTextColor(newCount > statusWarn ? green : newCount > statusErr ? yellow : red);
   }
 
   @Override
