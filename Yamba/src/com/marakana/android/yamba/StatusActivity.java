@@ -3,6 +3,7 @@ package com.marakana.android.yamba;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,7 +27,10 @@ public class StatusActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status);
+        setContentView(
+			getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
+			? R.layout.activity_status : R.layout.activity_status_land
+        );
         if (BuildConfig.DEBUG) { Log.d("###", "in onCreate"); }
 
         okColor = getResources().getColor(R.color.green);
