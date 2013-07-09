@@ -1,7 +1,6 @@
 
 package com.marakana.android.yamba;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Editable;
@@ -13,49 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.marakana.android.yamba.clientlib.YambaClient;
-import com.marakana.android.yamba.clientlib.YambaClientException;
+import com.marakana.android.yamba.svc.YambaService;
 
 public class StatusActivity extends Activity {
-    private static final String TAG = "STATUS";
-
     private static final int STATUS_LEN = 140;
     private static final int WARN_LIMIT = 10;
     private static final int ERR_LIMIT = 0;
 
-
-    class Poster extends AsyncTask<String, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(String... statusMsg) {
-            int msg = R.string.post_failed;
-            try {
-                yamba.postStatus(statusMsg[0]);
-                msg = R.string.post_succeeded;
-            }
-            catch (YambaClientException e) {
-                Log.e(TAG, "Post failed: " + e, e);
-            }
-
-            return Integer.valueOf(msg);
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            postComplete(result.intValue());
-        }
-    }
-
-
-     YambaClient yamba;
-
-    private Poster poster;
-
     private TextView count;
     private EditText status;
-    private Button submit;
 
     private int okColor;
     private int warnColor;
@@ -71,9 +36,7 @@ public class StatusActivity extends Activity {
         warnColor = getResources().getColor(R.color.yellow);
         errColor = getResources().getColor(R.color.red);
 
-        yamba = new YambaClient("student", "password", "http://yamba.marakana.com/api");
-
-        submit = (Button) findViewById(R.id.button1);
+        Button submit = (Button) findViewById(R.id.button1);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { postStatus(); }
@@ -87,28 +50,20 @@ public class StatusActivity extends Activity {
             public void afterTextChanged(Editable s) { updateCount(); }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int n, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int n) { }
         });
-    }
-
-    public void postComplete(int msg) {
-        Toast.makeText(StatusActivity.this, msg, Toast.LENGTH_LONG).show();
-        poster = null;
-        submit.setEnabled(true);
     }
 
     void postStatus() {
         String statusMsg = status.getText().toString();
         if (TextUtils.isEmpty(statusMsg)) { return; }
 
-        if (null != poster) { return; }
-        poster = new Poster();
-        submit.setEnabled(false);
+        status.setText("");
 
-        poster.execute(statusMsg);
+        YambaService.post(this, statusMsg);
     }
 
     void updateCount() {
