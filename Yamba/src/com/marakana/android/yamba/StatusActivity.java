@@ -1,20 +1,58 @@
 
 package com.marakana.android.yamba;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.marakana.android.yamba.clientlib.YambaClient;
+import com.marakana.android.yamba.clientlib.YambaClientException;
 
 public class StatusActivity extends Activity {
+    private static final String TAG = "STATUS";
+
     private static final int STATUS_LEN = 140;
     private static final int WARN_LIMIT = 10;
     private static final int ERR_LIMIT = 0;
 
+
+    class Poster extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... statusMsg) {
+            int msg = R.string.post_failed;
+            try {
+                try { Thread.sleep(5 * 60 * 1000); }
+                catch (InterruptedException e) { }
+
+                yamba.postStatus(statusMsg[0]);
+
+                msg = R.string.post_succeeded;
+            }
+            catch (YambaClientException e) {
+                Log.e(TAG, "Post failed: ", e);
+            }
+
+            return Integer.valueOf(msg);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            postComplete(result.intValue());
+        }
+    }
+
+
+    private YambaClient yamba;
 
     private TextView count;
     private EditText status;
@@ -33,6 +71,14 @@ public class StatusActivity extends Activity {
         warnColor = getResources().getColor(R.color.yellow);
         errColor = getResources().getColor(R.color.red);
 
+        yamba = new YambaClient("student", "password", "http://yamba.marakana.com/api");
+
+        Button button = (Button) findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { postStatus(); }
+        });
+
         count = (TextView) findViewById(R.id.status_count);
         status = (EditText) findViewById(R.id.status_status);
 
@@ -48,6 +94,18 @@ public class StatusActivity extends Activity {
         });
     }
 
+    public void postComplete(int msg) {
+        Toast.makeText(StatusActivity.this, msg, Toast.LENGTH_LONG).show();
+        // clear edit text if msg is good...
+    }
+
+    void postStatus() {
+        // get status string from status Edit Text
+        // post to net
+
+        new Poster().execute(status.getText().toString());
+    }
+
     void updateCount() {
         int n = STATUS_LEN - status.getText().length();
         int color;
@@ -56,7 +114,7 @@ public class StatusActivity extends Activity {
         else  { color = errColor; }
 
         count.setText(String.valueOf(n));
-        count.setTextColor(color);
+        count.setTextColor(color + 0x0333333);
     }
 
     @Override
