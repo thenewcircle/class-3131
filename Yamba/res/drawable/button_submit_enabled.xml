@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <corners android:radius="@dimen/button_corner" />
+
+    <gradient
+        android:angle="90"
+        android:centerColor="@color/white"
+        android:endColor="@color/gray"
+        android:startColor="@color/gray"
+        android:type="linear" />
+
+    <stroke
+        android:width="@dimen/button_stroke"
+        android:color="@color/black" />
+
+</shape>
