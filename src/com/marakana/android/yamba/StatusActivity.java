@@ -1,6 +1,7 @@
 package com.marakana.android.yamba;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +21,7 @@ public class StatusActivity extends Activity {
   private int red;
   private TextView count;
   private TextView status;
+  private Resources res;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +30,13 @@ public class StatusActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_status);
 
-    statusMax = Integer.parseInt(getResources().getString(R.string.status_max));
-    statusWarn = Integer.parseInt(getResources().getString(R.string.status_warn));
-    statusErr = Integer.parseInt(getResources().getString(R.string.status_err));
+    statusMax = getIntResource(R.string.status_max);
+    statusWarn = getIntResource(R.string.status_warn);
+    statusErr = getIntResource(R.string.status_err);
 
-    green = getResources().getColor(R.color.green);
-    yellow = getResources().getColor(R.color.yellow);
-    red = getResources().getColor(R.color.red);
+    green = getColorResource(R.color.green);
+    yellow = getColorResource(R.color.yellow);
+    red = getColorResource(R.color.red);
 
     count = (TextView) findViewById(R.id.status_count);
     status = (TextView) findViewById(R.id.status_text);
@@ -55,6 +57,20 @@ public class StatusActivity extends Activity {
       }
 
     });
+  }
+
+  private int getColorResource(int colorId) {
+    return getRes().getColor(colorId);
+  }
+
+  private int getIntResource(int stringId) {
+    return Integer.parseInt(getRes().getString(stringId));
+  }
+
+  private Resources getRes() {
+    if (res == null)
+      res = getResources();
+    return res;
   }
 
   /**
