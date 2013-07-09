@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/calm_before_storm_1"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/header"
+        style="@style/headerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thunderstorm_simulator_2000" />
+
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/protect_from_lightning"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/zap_button"
+        android:layout_width="196dp"
+        android:layout_height="wrap_content"
+        android:text="@string/lightning_strike"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/status"
+        android:layout_width="278dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="@string/my_status_message"
+        android:textColor="@color/white" >
+
+        <requestFocus android:layout_width="match_parent" />
+    </EditText>
+
+    <TextView
+        android:id="@+id/living_status"
+        android:layout_width="247dp"
+        android:layout_height="match_parent"
+        android:text="@string/you_are_currently_alive"
+        android:textColor="@color/white" />
+
+</LinearLayout>

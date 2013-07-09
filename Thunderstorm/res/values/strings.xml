@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Yamba</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="lightning_strike">Lighting Strike!</string>
+    <string name="protect_from_lightning">Fly kite near storm</string>
+    <string name="you_are_currently_alive">You are currently: Alive</string>
+    <string name="thunderstorm_simulator_2000">Thunderstorm Simulator 2000!</string>
+    <string name="my_status_message">Ben Franklin</string>
+    <string name="your_name">"Your Name: "</string>
+
+</resources>
