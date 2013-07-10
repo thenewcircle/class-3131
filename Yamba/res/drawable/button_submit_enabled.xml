@@ -3,12 +3,12 @@
 
     <corners android:radius="@dimen/button_corner" />
 
-<!--     <gradient
+    <gradient
         android:angle="90"
         android:centerColor="@color/white"
         android:endColor="@color/gray"
         android:startColor="@color/gray"
-        android:type="linear" /> -->
+        android:type="linear" />
 
     <stroke
         android:width="@dimen/button_stroke"
