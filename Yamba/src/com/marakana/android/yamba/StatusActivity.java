@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -15,9 +14,12 @@ import android.widget.TextView;
 import com.marakana.android.yamba.svc.YambaService;
 
 public class StatusActivity extends Activity {
+    private static final String TAG = "STATUS";
+
     private static final int STATUS_LEN = 140;
     private static final int WARN_LIMIT = 10;
     private static final int ERR_LIMIT = 0;
+
 
     private TextView count;
     private EditText status;
@@ -29,22 +31,22 @@ public class StatusActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status);
-        if (BuildConfig.DEBUG) { Log.d("###", "in onCreate"); }
 
         okColor = getResources().getColor(R.color.green);
         warnColor = getResources().getColor(R.color.yellow);
         errColor = getResources().getColor(R.color.red);
 
-        Button submit = (Button) findViewById(R.id.button1);
+        setContentView(R.layout.activity_status);
+
+        Button submit = (Button) findViewById(R.id.status_submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { postStatus(); }
         });
 
         count = (TextView) findViewById(R.id.status_count);
-        status = (EditText) findViewById(R.id.status_status);
 
+        status = (EditText) findViewById(R.id.status_status);
         status.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) { updateCount(); }
@@ -74,7 +76,7 @@ public class StatusActivity extends Activity {
         else  { color = errColor; }
 
         count.setText(String.valueOf(n));
-        count.setTextColor(color + 0x0333333);
+        count.setTextColor(color);
     }
 
     @Override
