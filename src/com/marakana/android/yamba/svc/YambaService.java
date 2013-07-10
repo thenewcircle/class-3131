@@ -69,11 +69,22 @@ public class YambaService extends IntentService {
   }
 
   public static void startPolling(Context c) {
+    getAlarmService(c).setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + 100,
+        POLL_SECS * 1000, createPollingIntent(c));
+  }
+
+  public static void stopPolling(Context c) {
+    getAlarmService(c).cancel(createPollingIntent(c));
+  }
+
+  private static AlarmManager getAlarmService(Context c) {
+    return (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+  }
+
+  private static PendingIntent createPollingIntent(Context c) {
     Intent i = new Intent(c, YambaService.class);
     i.putExtra(PARAM_OP, OP_POLL);
-    AlarmManager svc = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
-    svc.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + 100, POLL_SECS * 1000,
-        PendingIntent.getService(c, OP_POLL, i, PendingIntent.FLAG_NO_CREATE));
+    return PendingIntent.getService(c, OP_POLL, i, PendingIntent.FLAG_NO_CREATE);
   }
 
   public static void post(Context c, String status) {

@@ -32,9 +32,10 @@ public class StatusActivity extends Activity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
     if (BuildConfig.DEBUG)
       Log.d(LOG_TAG, "onCreate");
-    super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_status);
 
     statusMax = getIntResource(R.string.status_max);
@@ -108,6 +109,24 @@ public class StatusActivity extends Activity {
     if (res == null)
       res = getResources();
     return res;
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (BuildConfig.DEBUG)
+      Log.d(LOG_TAG, "onResume");
+    // TODO: Move this to the TimelineActivity
+    YambaService.startPolling(this);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if (BuildConfig.DEBUG)
+      Log.d(LOG_TAG, "onPause");
+    // TODO: Move this to the TimelineActivity
+    YambaService.stopPolling(this);
   }
 
 }
