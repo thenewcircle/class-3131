@@ -15,7 +15,11 @@
  */
 package com.marakana.android.yamba.svc;
 
+import java.util.List;
+
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 
 import com.marakana.android.yamba.R;
 import com.marakana.android.yamba.clientlib.YambaClient;
+import com.marakana.android.yamba.clientlib.YambaClient.Status;
 import com.marakana.android.yamba.clientlib.YambaClientException;
 
 
@@ -37,8 +42,14 @@ public class YambaService extends IntentService {
     private static final String TAG = "SVC";
 
     static final int OP_POST_COMPLETE = -1;
+    static final int OP_POST = -2;
+    static final int OP_POLL = -3;
 
+    private static final String PARAM_OP = "YambaService.OP";
     private static final String PARAM_STATUS = "YambaService.STATUS";
+
+    private static final long POLL_INTERVAL = 10 * 1000;
+    private static final int MAX_POLLS = 20;
 
     private static class Hdlr extends Handler {
         private final  YambaService svc;
@@ -55,12 +66,32 @@ public class YambaService extends IntentService {
         }
     }
 
+    public static void stopPolling(Context ctxt) {
+        ((AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE))
+            .cancel(createPollingIntent(ctxt));
+    }
+
+    public static void startPolling(Context ctxt) {
+        ((AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE))
+            .setInexactRepeating(
+                AlarmManager.RTC,
+                System.currentTimeMillis() + 100,
+                POLL_INTERVAL,
+                createPollingIntent(ctxt));
+    }
+
     public static void post(Context ctxt, String statusMsg) {
         Intent i = new Intent(ctxt, YambaService.class);
+        i.putExtra(PARAM_OP, OP_POST);
         i.putExtra(PARAM_STATUS, statusMsg);
         ctxt.startService(i);
     }
 
+    private static PendingIntent createPollingIntent(Context ctxt) {
+        Intent i = new Intent(ctxt, YambaService.class);
+        i.putExtra(PARAM_OP, OP_POLL);
+        return PendingIntent.getService(ctxt, OP_POLL, i, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
 
     private volatile YambaClient yamba;
     private Hdlr hdlr;
@@ -76,8 +107,17 @@ public class YambaService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent i) {
-        String statusMsg = i.getStringExtra(PARAM_STATUS);
+        switch (i.getIntExtra(PARAM_OP, 0)) {
+            case OP_POST:
+                doPost(i.getStringExtra(PARAM_STATUS));
+                break;
+            case OP_POLL:
+                doPoll();
+                break;
+        }
+    }
 
+    private void doPost(String statusMsg) {
         int msg = R.string.post_failed;
         try {
             yamba.postStatus(statusMsg);
@@ -90,7 +130,20 @@ public class YambaService extends IntentService {
         Message.obtain(hdlr, OP_POST_COMPLETE, msg, 0).sendToTarget();
     }
 
-    public void postComplete(int msg) {
+    void postComplete(int msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    private void doPoll() {
+        Log.d(TAG, "polling");
+        List<Status> timeline;
+        try { timeline = yamba.getTimeline(MAX_POLLS); }
+        catch (YambaClientException e) {
+            Log.e(TAG, "Post failed: " + e, e);
+            return;
+        }
+        for (Status status: timeline) {
+            Log.d(TAG, "Status: " + status.getUser() + ": " + status.getMessage());
+        }
     }
 }

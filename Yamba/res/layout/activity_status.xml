@@ -17,19 +17,6 @@
         android:layout_gravity="center"
         android:text="@string/label_status" />
 
-    <EditText
-        android:id="@+id/status_status"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/fog"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="@string/status_hint" >
-
-        <requestFocus />
-    </EditText>
-    
     <TextView
         android:id="@+id/status_count"
         android:layout_width="wrap_content"
@@ -37,9 +24,21 @@
         android:layout_gravity="right"
         android:text="@string/status_count"
         android:textColor="@color/green" />
-    
+
+    <EditText
+        android:id="@+id/status_status"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/fog"
+        android:gravity="top|left"
+        android:hint="@string/status_hint" >
+
+        <requestFocus />
+    </EditText>
+
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/status_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
