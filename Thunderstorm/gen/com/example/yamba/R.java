@@ -49,6 +49,8 @@ public final class R {
         public static final int hello_world=0x7f060002;
         public static final int lightning_strike=0x7f060003;
         public static final int my_status_message=0x7f060007;
+        public static final int post_failed=0x7f060009;
+        public static final int post_succeeded=0x7f06000a;
         public static final int protect_from_lightning=0x7f060004;
         public static final int thunderstorm_simulator_2000=0x7f060006;
         public static final int you_are_currently_alive=0x7f060005;
