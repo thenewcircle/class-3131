@@ -14,7 +14,8 @@
         a:allowBackup="true"
         a:icon="@drawable/ic_launcher"
         a:label="@string/app_name"
-        a:theme="@style/AppTheme" >
+        a:theme="@style/AppTheme"
+        a:name=".YambaApp" >
         <activity
             a:name=".StatusActivity"
             a:label="@string/app_name" >
