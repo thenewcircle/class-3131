@@ -1,6 +1,8 @@
 
 package com.marakana.android.yamba;
 
+import com.marakana.android.yamba.svc.YambaService;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -8,6 +10,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,8 +19,7 @@ public class StatusActivity extends Activity {
     private static final int STATUS_LEN = 140;
     private static final int WARN_LIMIT = 10;
     private static final int ERR_LIMIT = 0;
-
-
+    
     private TextView count;
     private EditText status;
 
@@ -36,6 +39,15 @@ public class StatusActivity extends Activity {
         okColor = getResources().getColor(R.color.green);
         warnColor = getResources().getColor(R.color.yellow);
         errColor = getResources().getColor(R.color.red);
+        
+        Button button = (Button) findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				postStatus();
+			}
+		});
 
         count = (TextView) findViewById(R.id.status_count);
         status = (EditText) findViewById(R.id.status_status);
@@ -50,6 +62,10 @@ public class StatusActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { }
         });
+    }
+
+    void postStatus() {
+    	YambaService.post(this, status.getText().toString());
     }
 
     void updateCount() {

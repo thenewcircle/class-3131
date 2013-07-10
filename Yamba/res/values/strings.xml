@@ -7,5 +7,7 @@
     <string name="status_count">140</string>
     <string name="status_hint">What\'s up?</string>
     <string name="button_submit">Submit</string>
+    <string name="post_succeeded">Post succeeded</string>
+    <string name="post_failed">Post failed</string>
 
 </resources>
