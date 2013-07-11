@@ -104,7 +104,6 @@ public class TimelineActivity extends ListActivity implements LoaderCallbacks<Cu
         adapter.setViewBinder(new TimelineBinder());
         setListAdapter(adapter);
 
-
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 }

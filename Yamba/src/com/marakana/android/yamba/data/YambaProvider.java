@@ -101,7 +101,11 @@ public class YambaProvider extends ContentProvider {
 
         if (0 < pk) { qb.appendWhere(YambaDbHelper.COL_ID +"=" + pk); }
 
-        return qb.query(getDb(), proj, sel, selArgs, null, null, sort);
+        Cursor c = qb.query(getDb(), proj, sel, selArgs, null, null, sort);
+
+        c.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return c;
     }
 
     @Override
@@ -131,6 +135,10 @@ public class YambaProvider extends ContentProvider {
         }
         finally {
             db.endTransaction();
+        }
+
+        if (0 < count) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return count;
