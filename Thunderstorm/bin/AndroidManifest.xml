@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.yamba"
+    package="com.marakana.android.yamba"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -15,9 +15,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name="com.example.yamba.YambaAppl">
+        android:name=".YambaApplication">
         <activity
-            android:name="com.example.yamba.MainActivity"
+            android:name=".StatusActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.marakana.service.YambaService"/>
+        <service android:name=".svc.YambaService"/>
+    
+        <provider
+            android:exported="false"
+            android:authorities="com.marakana.android.yamba.timeline"
+            android:name=".data.YambaProvider" />
     </application>
 
 </manifest>
