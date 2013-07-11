@@ -1,28 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
-    
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin" >
+
     <TextView
         android:id="@+id/status_user"
         style="@style/yamba_text_bold"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/status_timestamp"
         style="@style/yamba_text"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_gravity="right"
-        android:layout_height="wrap_content" />
-    
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/status_user"
+        android:layout_alignParentRight="true" />
+
     <TextView
         android:id="@+id/status_message"
         style="@style/yamba_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/status_user" />
+
+</RelativeLayout>
