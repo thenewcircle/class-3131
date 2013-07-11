@@ -92,9 +92,9 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
-        View v = super.onCreateView(inflater, parent, state);
+//        View v = super.onCreateView(inflater, parent, state);
 
-        //View v = inflater.inflate(R.layout.activity_status, parent, false);
+        View v = inflater.inflate(R.layout.fragment_status, parent, false);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 getActivity(),
