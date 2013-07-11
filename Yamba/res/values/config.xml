@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- polling config -->
+    <!-- 3 * 60 * 1000: 3 minutes in ms -->
+    <integer name="poll_interval">180000</integer>
+    <integer name="poll_size">20</integer>
+
+    <!-- status display config -->
+    <integer name="status_len_max">140</integer>
+    <integer name="warn_max">10</integer>
+    <integer name="err_max">0</integer>
+
+</resources>

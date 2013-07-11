@@ -13,16 +13,16 @@ public class YambaContract {
     public static final String AUTHORITY = "com.marakana.android.yamba.timeline";
 
     public static final Uri BASE_URI = new Uri.Builder()
-    .scheme(ContentResolver.SCHEME_CONTENT)
-    .authority(AUTHORITY)
-    .build();
+        .scheme(ContentResolver.SCHEME_CONTENT)
+        .authority(AUTHORITY)
+        .build();
 
     private static final String MINOR_TYPE = "/vnd." + AUTHORITY;
 
     public static final String ITEM_TYPE
-    = ContentResolver.CURSOR_ITEM_BASE_TYPE + MINOR_TYPE;
+        = ContentResolver.CURSOR_ITEM_BASE_TYPE + MINOR_TYPE;
     public static final String DIR_TYPE
-    = ContentResolver.CURSOR_DIR_BASE_TYPE + MINOR_TYPE;
+        = ContentResolver.CURSOR_DIR_BASE_TYPE + MINOR_TYPE;
 
     public static class Timeline {
         private Timeline() { }

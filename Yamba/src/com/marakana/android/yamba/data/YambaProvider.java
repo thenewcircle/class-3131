@@ -15,10 +15,18 @@ public class YambaProvider extends ContentProvider {
     private static final String TAG = "PROVIDER";
 
     private static final ColumnMap COL_MAP_TIMELINE = new ColumnMap.Builder()
-        .addColumn(YambaContract.Timeline.Columns.ID, YambaDbHelper.COL_ID, ColumnMap.Type.LONG)
-        .addColumn(YambaContract.Timeline.Columns.CREATED_AT, YambaDbHelper.COL_CREATED_AT, ColumnMap.Type.LONG)
-        .addColumn(YambaContract.Timeline.Columns.USER, YambaDbHelper.COL_USER, ColumnMap.Type.STRING)
-        .addColumn(YambaContract.Timeline.Columns.STATUS, YambaDbHelper.COL_STATUS, ColumnMap.Type.STRING)
+        .addColumn(
+                YambaContract.Timeline.Columns.ID,
+                YambaDbHelper.COL_ID, ColumnMap.Type.LONG)
+        .addColumn(
+                YambaContract.Timeline.Columns.CREATED_AT,
+                YambaDbHelper.COL_CREATED_AT, ColumnMap.Type.LONG)
+        .addColumn(
+                YambaContract.Timeline.Columns.USER,
+                YambaDbHelper.COL_USER, ColumnMap.Type.STRING)
+        .addColumn(
+                YambaContract.Timeline.Columns.STATUS,
+                YambaDbHelper.COL_STATUS, ColumnMap.Type.STRING)
         .build();
 
     private static final ProjectionMap PROJ_MAP_TIMELINE = new ProjectionMap.Builder()
@@ -26,7 +34,9 @@ public class YambaProvider extends ContentProvider {
         .addColumn(YambaContract.Timeline.Columns.CREATED_AT, YambaDbHelper.COL_CREATED_AT)
         .addColumn(YambaContract.Timeline.Columns.USER, YambaDbHelper.COL_USER)
         .addColumn(YambaContract.Timeline.Columns.STATUS, YambaDbHelper.COL_STATUS)
-        .addColumn(YambaContract.Timeline.Columns.MAX_TIMESTAMP, "max(" + YambaDbHelper.COL_CREATED_AT + ")")
+        .addColumn(
+                YambaContract.Timeline.Columns.MAX_TIMESTAMP,
+                "max(" + YambaDbHelper.COL_CREATED_AT + ")")
         .build();
 
 

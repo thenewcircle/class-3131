@@ -32,9 +32,6 @@ public class YambaService extends IntentService {
     private static final String PARAM_OP = "YambaService.OP";
     private static final String PARAM_STATUS = "YambaService.STATUS";
 
-    private static final long POLL_INTERVAL =  3 * 60 * 1000;
-    private static final int MAX_POLLS = 20;
-
     private static class Hdlr extends Handler {
         private final  YambaService svc;
 
@@ -62,7 +59,7 @@ public class YambaService extends IntentService {
             .setInexactRepeating(
                 AlarmManager.RTC,
                 System.currentTimeMillis() + 100,
-                POLL_INTERVAL,
+                getPollInterval(ctxt),
                 createPollingIntent(ctxt));
     }
 
@@ -77,11 +74,23 @@ public class YambaService extends IntentService {
     private static PendingIntent createPollingIntent(Context ctxt) {
         Intent i = new Intent(ctxt, YambaService.class);
         i.putExtra(PARAM_OP, OP_POLL);
-        return PendingIntent.getService(ctxt, OP_POLL, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent
+            .getService(ctxt, OP_POLL, i, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    // LAZILY INITIALIZED!  Use getPollInterval().
+    private static long pollInterval;
+
+    private static synchronized long getPollInterval(Context ctxt) {
+        if (0 >= pollInterval) {
+            pollInterval = ctxt.getResources().getInteger(R.integer.poll_interval);
+        }
+        return pollInterval;
     }
 
 
     private volatile YambaClient yamba;
+    private volatile int pollSize;
     private volatile Hdlr hdlr;
 
     public YambaService() { super(TAG); }
@@ -93,6 +102,9 @@ public class YambaService extends IntentService {
         Log.d(TAG, "service created");
 
         hdlr = new Hdlr(this);
+
+        pollSize = getResources().getInteger(R.integer.poll_size);
+
         yamba = new YambaClient("student", "password", "http://yamba.marakana.com/api");
     }
 
@@ -130,7 +142,7 @@ public class YambaService extends IntentService {
     private void doPoll() {
         Log.d(TAG, "polling");
         List<Status> timeline;
-        try { timeline = yamba.getTimeline(MAX_POLLS); }
+        try { timeline = yamba.getTimeline(pollSize); }
         catch (YambaClientException e) {
             Log.e(TAG, "Post failed: " + e, e);
             return;
@@ -152,11 +164,12 @@ public class YambaService extends IntentService {
         }
 
         int n = rows.size();
-        if (0 < n) {
-            ContentValues[] vals = new ContentValues[n];
-            getContentResolver()
-                .bulkInsert(YambaContract.Timeline.URI, rows.toArray(vals));
-        }
+        if (0 >= n) { return; }
+
+        ContentValues[] vals = new ContentValues[n];
+        getContentResolver()
+            .bulkInsert(YambaContract.Timeline.URI, rows.toArray(vals));
+
     }
 
     private long getLatestStatusTime() {
@@ -171,7 +184,8 @@ public class YambaService extends IntentService {
 
             return (!c.moveToNext())
                     ? Long.MIN_VALUE
-                    : c.getLong(c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
+                    : c.getLong(
+                        c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
         }
         finally {
             if (null != c) { c.close(); }
