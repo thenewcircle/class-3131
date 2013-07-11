@@ -62,7 +62,11 @@ public class YambaProvider extends ContentProvider {
         qb.setTables(YambaDbHelper.TABLE_TIMELINE);
         qb.setProjectionMap(PROJ_MAP_TIMELINE.getProjectionMap());
 
-        return qb.query(dbHelper.getWritableDatabase(), proj, sel, selArgs, null, null, sort);
+        Cursor c = qb.query(dbHelper.getWritableDatabase(), proj, sel, selArgs, null, null, sort);
+        
+        c.setNotificationUri(getContext().getContentResolver(), uri);
+        
+        return c;
     }
 
     @Override
@@ -84,6 +88,10 @@ public class YambaProvider extends ContentProvider {
         }
         finally {
             db.endTransaction();
+        }
+        
+        if (0 < count) {
+        	getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return count;
