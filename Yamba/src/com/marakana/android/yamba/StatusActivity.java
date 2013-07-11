@@ -1,4 +1,3 @@
-
 package com.marakana.android.yamba;
 
 import android.os.Bundle;
@@ -6,12 +5,13 @@ import android.app.Activity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Menu;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.marakana.android.yamba.svc.YambaService;
+
 
 public class StatusActivity extends Activity {
     private static final String TAG = "STATUS";
@@ -61,6 +61,8 @@ public class StatusActivity extends Activity {
 
     void postStatus() {
         String statusMsg = status.getText().toString();
+        Log.d(TAG, "post: " + statusMsg);
+
         if (TextUtils.isEmpty(statusMsg)) { return; }
 
         status.setText("");
@@ -77,11 +79,5 @@ public class StatusActivity extends Activity {
 
         count.setText(String.valueOf(n));
         count.setTextColor(color);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.status, menu);
-        return true;
     }
 }

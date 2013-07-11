@@ -21,11 +21,6 @@ import android.util.Log;
 import com.marakana.android.yamba.svc.YambaService;
 
 
-/**
- *
- * @version $Revision: $
- * @author <a href="mailto:blake.meike@gmail.com">G. Blake Meike</a>
- */
 public class YambaApplication extends Application {
     private static final String TAG = "APP";
 

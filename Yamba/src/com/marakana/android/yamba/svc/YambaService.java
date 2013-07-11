@@ -1,18 +1,3 @@
-/* $Id: $
-   Copyright 2013, G. Blake Meike
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package com.marakana.android.yamba.svc;
 
 import java.util.ArrayList;
@@ -35,14 +20,8 @@ import com.marakana.android.yamba.YambaContract;
 import com.marakana.android.yamba.clientlib.YambaClient;
 import com.marakana.android.yamba.clientlib.YambaClient.Status;
 import com.marakana.android.yamba.clientlib.YambaClientException;
-import com.marakana.android.yamba.data.YambaDbHelper;
 
 
-/**
- *
- * @version $Revision: $
- * @author <a href="mailto:blake.meike@gmail.com">G. Blake Meike</a>
- */
 public class YambaService extends IntentService {
     private static final String TAG = "SVC";
 
@@ -53,7 +32,7 @@ public class YambaService extends IntentService {
     private static final String PARAM_OP = "YambaService.OP";
     private static final String PARAM_STATUS = "YambaService.STATUS";
 
-    private static final long POLL_INTERVAL = 10 * 1000;
+    private static final long POLL_INTERVAL =  3 * 60 * 1000;
     private static final int MAX_POLLS = 20;
 
     private static class Hdlr extends Handler {
@@ -72,11 +51,13 @@ public class YambaService extends IntentService {
     }
 
     public static void stopPolling(Context ctxt) {
-        ((AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE))
+        Log.d(TAG, "stop polling");
+       ((AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE))
             .cancel(createPollingIntent(ctxt));
     }
 
     public static void startPolling(Context ctxt) {
+        Log.d(TAG, "start polling");
         ((AlarmManager) ctxt.getSystemService(Context.ALARM_SERVICE))
             .setInexactRepeating(
                 AlarmManager.RTC,
@@ -86,6 +67,7 @@ public class YambaService extends IntentService {
     }
 
     public static void post(Context ctxt, String statusMsg) {
+        Log.d(TAG, "post: " + statusMsg);
         Intent i = new Intent(ctxt, YambaService.class);
         i.putExtra(PARAM_OP, OP_POST);
         i.putExtra(PARAM_STATUS, statusMsg);
@@ -98,14 +80,18 @@ public class YambaService extends IntentService {
         return PendingIntent.getService(ctxt, OP_POLL, i, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+
     private volatile YambaClient yamba;
-    private Hdlr hdlr;
+    private volatile Hdlr hdlr;
 
     public YambaService() { super(TAG); }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d(TAG, "service created");
+
         hdlr = new Hdlr(this);
         yamba = new YambaClient("student", "password", "http://yamba.marakana.com/api");
     }
@@ -123,6 +109,8 @@ public class YambaService extends IntentService {
     }
 
     private void doPost(String statusMsg) {
+        Log.d(TAG, "posting: " + statusMsg);
+
         int msg = R.string.post_failed;
         try {
             yamba.postStatus(statusMsg);
@@ -148,35 +136,45 @@ public class YambaService extends IntentService {
             return;
         }
 
-       long latest = getLatestStatusTime();
+        long latest = getLatestStatusTime();
 
         List<ContentValues> rows = new ArrayList<ContentValues>();
         for (Status status: timeline) {
             long t = status.getCreatedAt().getTime();
-            if (t < latest) { continue; }
+            if (t <= latest) { continue; }
 
             ContentValues cv = new ContentValues();
-            cv.put(YambaDbHelper.COL_ID, Long.valueOf(status.getId()));
-            cv.put(YambaDbHelper.COL_CREATED_AT, Long.valueOf(t));
-            cv.put(YambaDbHelper.COL_USER, status.getUser());
-            cv.put(YambaDbHelper.COL_STATUS, status.getMessage());
+            cv.put(YambaContract.Timeline.Columns.ID, Long.valueOf(status.getId()));
+            cv.put(YambaContract.Timeline.Columns.CREATED_AT, Long.valueOf(t));
+            cv.put(YambaContract.Timeline.Columns.USER, status.getUser());
+            cv.put(YambaContract.Timeline.Columns.STATUS, status.getMessage());
             rows.add(cv);
         }
 
-        getContentResolver()
-            .bulkInsert(YambaContract.Timeline.URI, (ContentValues[]) rows.toArray());
+        int n = rows.size();
+        if (0 < n) {
+            ContentValues[] vals = new ContentValues[n];
+            getContentResolver()
+                .bulkInsert(YambaContract.Timeline.URI, rows.toArray(vals));
+        }
     }
 
     private long getLatestStatusTime() {
-        Cursor c = getContentResolver().query(
+        Cursor c = null;
+        try {
+            c = getContentResolver().query(
                     YambaContract.Timeline.URI,
                     new String[] { YambaContract.Timeline.Columns.MAX_TIMESTAMP },
                     null,
                     null,
                     null);
 
-        return (!c.moveToNext())
-                ? Integer.MIN_VALUE
-                : c.getLong(c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
+            return (!c.moveToNext())
+                    ? Long.MIN_VALUE
+                    : c.getLong(c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
+        }
+        finally {
+            if (null != c) { c.close(); }
+        }
     }
 }
