@@ -30,7 +30,7 @@
 	        a:layout_height="wrap_content"
 	        a:layout_below="@id/status_title"
 	        a:gravity="right"
-	        a:text="@string/status_max"
+	        a:text="@integer/status_max"
 	        a:textColor="@color/green" />
 	    
 	    <Button

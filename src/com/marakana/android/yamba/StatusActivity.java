@@ -16,19 +16,17 @@ public class StatusActivity extends Activity {
 
   private final String LOG_TAG = StatusActivity.class.getSimpleName();
 
-  private int statusMax;
-  private int statusWarn;
-  private int statusErr;
+  private int          statusMax;
+  private int          statusWarn;
+  private int          statusErr;
 
-  private int green;
-  private int yellow;
-  private int red;
+  private int          green;
+  private int          yellow;
+  private int          red;
 
-  private TextView count;
-  private TextView status;
-  private Button submit;
-
-  private Resources res;
+  private TextView     count;
+  private TextView     status;
+  private Button       submit;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +36,15 @@ public class StatusActivity extends Activity {
 
     setContentView(R.layout.activity_status);
 
-    statusMax = getIntResource(R.string.status_max);
-    statusWarn = getIntResource(R.string.status_warn);
-    statusErr = getIntResource(R.string.status_err);
+    Resources res = getResources();
 
-    green = getColorResource(R.color.green);
-    yellow = getColorResource(R.color.yellow);
-    red = getColorResource(R.color.red);
+    statusMax = res.getInteger(R.integer.status_max);
+    statusWarn = res.getInteger(R.integer.warn_max);
+    statusErr = res.getInteger(R.integer.err_max);
+
+    green = res.getColor(R.color.green);
+    yellow = res.getColor(R.color.yellow);
+    red = res.getColor(R.color.red);
 
     count = (TextView) findViewById(R.id.status_count);
     status = (TextView) findViewById(R.id.status_text);
@@ -66,12 +66,10 @@ public class StatusActivity extends Activity {
       }
 
       @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-      }
+      public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
       @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
     });
   }
 
@@ -95,20 +93,6 @@ public class StatusActivity extends Activity {
   void postStatus() {
     YambaService.post(this, status.getText().toString());
     status.setText("");
-  }
-
-  private int getColorResource(int colorId) {
-    return getRes().getColor(colorId);
-  }
-
-  private int getIntResource(int stringId) {
-    return Integer.parseInt(getRes().getString(stringId));
-  }
-
-  private Resources getRes() {
-    if (res == null)
-      res = getResources();
-    return res;
   }
 
   @Override

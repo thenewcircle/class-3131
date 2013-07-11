@@ -23,25 +23,22 @@ import com.marakana.android.yamba.clientlib.YambaClientException;
 
 public class YambaService extends IntentService {
 
-  private static final String  LOG_TAG          = YambaService.class.getSimpleName();
+  private static final String   LOG_TAG          = YambaService.class.getSimpleName();
 
-  private static final String  YAMBA_API_URL    = "http://yamba.marakana.com/api";
-  private static final String  YAMBA_USERNAME   = "student";
-  private static final String  YAMBA_PASSWORD   = "password";
+  private static final String   YAMBA_API_URL    = "http://yamba.marakana.com/api";
+  private static final String   YAMBA_USERNAME   = "student";
+  private static final String   YAMBA_PASSWORD   = "password";
 
-  private static final String  PARAM_OP         = "YambaService.OP";
-  private static final String  PARAM_STATUS     = "YambaService.STATUS";
+  private static final String   PARAM_OP         = "YambaService.OP";
+  private static final String   PARAM_STATUS     = "YambaService.STATUS";
 
-  private static final long    POLL_SECS        = 10;
+  private static final int      OP_POST_COMPLETE = -1;
+  private static final int      OP_POST          = -2;
+  private static final int      OP_POLL          = -3;
 
-  private static final int     OP_POST_COMPLETE = -1;
-  private static final int     OP_POST          = -2;
-  private static final int     OP_POLL          = -3;
-
-  private static final int     MAX_POSTS        = 20;
-
-  private volatile YambaClient yamba;
-  private YambaHandler         handler;
+  private volatile YambaClient  yamba;
+  private volatile YambaHandler handler;
+  private volatile int          pollSize;
 
   private static class YambaHandler extends Handler {
 
@@ -70,6 +67,7 @@ public class YambaService extends IntentService {
     super.onCreate();
     yamba = new YambaClient(YAMBA_USERNAME, YAMBA_PASSWORD, YAMBA_API_URL);
     handler = new YambaHandler(this);
+    pollSize = getResources().getInteger(R.integer.poll_size);
   }
 
   public static void startPolling(Context c) {
@@ -77,7 +75,7 @@ public class YambaService extends IntentService {
             AlarmManager.RTC,
             System.currentTimeMillis() + 100, // Need padding since operation may completer after
                                               // NOW
-            POLL_SECS * 1000,
+            c.getResources().getInteger(R.integer.poll_interval),
             createPollingIntent(c));
   }
 
@@ -119,7 +117,7 @@ public class YambaService extends IntentService {
     List<Status> timeline = new ArrayList<Status>();
 
     try {
-      timeline = yamba.getTimeline(MAX_POSTS);
+      timeline = yamba.getTimeline(pollSize);
     } catch (YambaClientException e) {
       Log.e(LOG_TAG, "Failed to fetch timeline", e);
       return;
