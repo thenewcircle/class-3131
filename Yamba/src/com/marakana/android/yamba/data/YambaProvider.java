@@ -59,10 +59,13 @@ public class YambaProvider extends ContentProvider {
         Log.d(TAG, "query");
 
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
         qb.setTables(YambaDbHelper.TABLE_TIMELINE);
         qb.setProjectionMap(PROJ_MAP_TIMELINE.getProjectionMap());
 
-        return qb.query(dbHelper.getWritableDatabase(), proj, sel, selArgs, null, null, sort);
+
+
+        return qb.query(getDb(), proj, sel, selArgs, null, null, sort);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class YambaProvider extends ContentProvider {
         Log.d(TAG, "insert: " + rows.length);
 
         int count = 0;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = getDb();
         try {
             db.beginTransaction();
 
@@ -103,4 +106,6 @@ public class YambaProvider extends ContentProvider {
     public int delete(Uri arg0, String arg1, String[] arg2) {
         throw new UnsupportedOperationException("delete not supported");
     }
+
+    private SQLiteDatabase getDb() { return dbHelper.getWritableDatabase(); }
 }
