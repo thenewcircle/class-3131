@@ -2,6 +2,7 @@ package com.marakana.android.yamba;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,11 +17,6 @@ import com.marakana.android.yamba.svc.YambaService;
 public class StatusActivity extends Activity {
     private static final String TAG = "STATUS";
 
-    private static final int STATUS_LEN = 140;
-    private static final int WARN_LIMIT = 10;
-    private static final int ERR_LIMIT = 0;
-
-
     private TextView count;
     private EditText status;
 
@@ -28,13 +24,21 @@ public class StatusActivity extends Activity {
     private int warnColor;
     private int errColor;
 
+    private int statusLenMax;
+    private int warnMax;
+    private int errMax;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        okColor = getResources().getColor(R.color.green);
-        warnColor = getResources().getColor(R.color.yellow);
-        errColor = getResources().getColor(R.color.red);
+        Resources rez = getResources();
+        okColor = rez.getColor(R.color.green);
+        statusLenMax = rez.getInteger(R.integer.status_len_max);
+        warnColor = rez.getColor(R.color.yellow);
+        warnMax = rez.getInteger(R.integer.warn_max);
+        errColor = rez.getColor(R.color.red);
+        errMax = rez.getInteger(R.integer.err_max);
 
         setContentView(R.layout.activity_status);
 
@@ -71,10 +75,10 @@ public class StatusActivity extends Activity {
     }
 
     void updateCount() {
-        int n = STATUS_LEN - status.getText().length();
+        int n = statusLenMax - status.getText().length();
         int color;
-        if (n > WARN_LIMIT) { color = okColor; }
-        else if (n > ERR_LIMIT) { color = warnColor; }
+        if (n > warnMax) { color = okColor; }
+        else if (n > errMax) { color = warnColor; }
         else  { color = errColor; }
 
         count.setText(String.valueOf(n));
