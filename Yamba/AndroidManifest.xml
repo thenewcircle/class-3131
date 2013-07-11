@@ -9,15 +9,20 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-   
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
+        android:name=".YambaApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".YambaApplication">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".StatusActivity"
+            android:label="@string/label_status" >
+        </activity>
+        <activity
+            android:name=".TimelineActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,12 +30,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".svc.YambaService"/>
-        
+
+        <service android:name=".svc.YambaService" />
+
         <provider
-            android:exported="false"
+            android:name=".data.YambaProvider"
             android:authorities="com.marakana.android.yamba.timeline"
-            android:name=".data.YambaProvider" />
+            android:exported="false" />
+
+        <receiver android:name=".svc.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.ON_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

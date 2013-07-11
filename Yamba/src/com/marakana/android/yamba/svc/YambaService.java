@@ -72,7 +72,7 @@ public class YambaService extends IntentService {
     }
 
     private static PendingIntent createPollingIntent(Context ctxt) {
-        Intent i = new Intent(ctxt, YambaService.class);
+       Intent i = new Intent(ctxt, YambaService.class);
         i.putExtra(PARAM_OP, OP_POLL);
         return PendingIntent
             .getService(ctxt, OP_POLL, i, PendingIntent.FLAG_UPDATE_CURRENT);
