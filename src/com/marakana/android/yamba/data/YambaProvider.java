@@ -95,7 +95,9 @@ public class YambaProvider extends ContentProvider {
     // This is where we map virtual names to actual data names
     if (pk > 0) qb.appendWhere(YambaDbHelper.COL_ID + "=" + pk);
 
-    return qb.query(dbHelper.getWritableDatabase(), proj, sel, selArgs, null, null, sort);
+    Cursor c = qb.query(dbHelper.getWritableDatabase(), proj, sel, selArgs, null, null, sort);
+    c.setNotificationUri(getContext().getContentResolver(), uri);
+    return c;
   }
 
   @Override
@@ -127,6 +129,7 @@ public class YambaProvider extends ContentProvider {
       db.endTransaction();
     }
 
+    if (count > 0) getContext().getContentResolver().notifyChange(uri, null);
     return count;
   }
 
