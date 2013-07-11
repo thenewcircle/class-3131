@@ -21,7 +21,10 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 
 /**
@@ -47,6 +50,21 @@ public class TimelineActivity extends ListActivity implements LoaderCallbacks<Cu
         R.id.timeline_user,
         R.id.timeline_status
     };
+
+    static class TimelineBinder implements SimpleCursorAdapter.ViewBinder {
+
+        @Override
+        public boolean setViewValue(View v, Cursor c, int col) {
+            if (R.id.timeline_timestamp != v.getId()) { return false; }
+
+            CharSequence s = "long ago";
+            long t = c.getLong(col);
+            if (0 < t) { s = DateUtils.getRelativeTimeSpanString(t); }
+            ((TextView) v).setText(s);
+            return true;
+        }
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
@@ -83,7 +101,9 @@ public class TimelineActivity extends ListActivity implements LoaderCallbacks<Cu
                 FROM,
                 TO,
                 0);
+        adapter.setViewBinder(new TimelineBinder());
         setListAdapter(adapter);
+
 
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
