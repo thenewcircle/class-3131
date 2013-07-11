@@ -27,6 +27,13 @@
         </activity>
         <service 
             a:name=".svc.YambaService"></service>
+        
+        <provider 
+            a:exported="false"
+            a:authorities="com.marakana.android.yamba.timeline"
+            a:name=".data.YambaProvider" />
+        
     </application>
+    
 
 </manifest>

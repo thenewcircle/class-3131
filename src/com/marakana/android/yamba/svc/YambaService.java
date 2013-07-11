@@ -9,17 +9,17 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.marakana.android.yamba.R;
+import com.marakana.android.yamba.YambaContract;
 import com.marakana.android.yamba.clientlib.YambaClient;
 import com.marakana.android.yamba.clientlib.YambaClient.Status;
 import com.marakana.android.yamba.clientlib.YambaClientException;
-import com.marakana.android.yamba.data.YambaDbHelper;
 
 public class YambaService extends IntentService {
 
@@ -42,7 +42,6 @@ public class YambaService extends IntentService {
 
   private volatile YambaClient yamba;
   private YambaHandler         handler;
-  private YambaDbHelper        dbHelper;
 
   private static class YambaHandler extends Handler {
 
@@ -71,7 +70,6 @@ public class YambaService extends IntentService {
     super.onCreate();
     yamba = new YambaClient(YAMBA_USERNAME, YAMBA_PASSWORD, YAMBA_API_URL);
     handler = new YambaHandler(this);
-    dbHelper = new YambaDbHelper(this);
   }
 
   public static void startPolling(Context c) {
@@ -123,17 +121,38 @@ public class YambaService extends IntentService {
       timeline = yamba.getTimeline(MAX_POSTS);
     } catch (YambaClientException e) {
       Log.e(LOG_TAG, "Failed to fetch timeline", e);
+      return;
     }
 
-    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    long latest = getLatestStatusTime();
+
+    List<ContentValues> rows = new ArrayList<ContentValues>();
+    // Ideally, this should page
     for (Status status : timeline) {
+      long time = status.getCreatedAt().getTime();
+      if (time <= latest) {
+        continue;
+      }
+
       ContentValues cv = new ContentValues();
-      cv.put(YambaDbHelper.COL_ID, status.getId());
-      cv.put(YambaDbHelper.COL_USER, status.getUser());
-      cv.put(YambaDbHelper.COL_STATUS, status.getMessage());
-      cv.put(YambaDbHelper.COL_CREATED_AT, status.getCreatedAt().getTime());
-      db.insert(YambaDbHelper.TABLE_TIMELINE, null, cv);
+      cv.put(YambaContract.Timeline.Columns.ID, status.getId());
+      cv.put(YambaContract.Timeline.Columns.USER, status.getUser());
+      cv.put(YambaContract.Timeline.Columns.STATUS, status.getMessage());
+      cv.put(YambaContract.Timeline.Columns.CREATED_AT, status.getCreatedAt().getTime());
+      // Optimization to avoid opening db, writing, closing for each row
+      rows.add(cv);
     }
+
+    getContentResolver().bulkInsert(YambaContract.Timeline.URI, (ContentValues[]) rows.toArray());
+  }
+
+  private long getLatestStatusTime() {
+    Cursor cursor = getContentResolver().query(YambaContract.Timeline.URI,
+        new String[] { YambaContract.Timeline.Columns.MAX_TIMESTAMP }, null, null, null);
+
+    return cursor.getCount() == 0
+        ? Integer.MIN_VALUE
+        : cursor.getLong(cursor.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
   }
 
   private void postStatus(Intent i) {
