@@ -74,10 +74,11 @@ public class YambaService extends IntentService {
 
   public static void startPolling(Context c) {
     getAlarmService(c).setInexactRepeating(
-        AlarmManager.RTC,
-        System.currentTimeMillis() + 100, // Need padding since operation may completer after NOW
-        POLL_SECS * 1000,
-        createPollingIntent(c));
+            AlarmManager.RTC,
+            System.currentTimeMillis() + 100, // Need padding since operation may completer after
+                                              // NOW
+            POLL_SECS * 1000,
+            createPollingIntent(c));
   }
 
   public static void stopPolling(Context c) {
@@ -143,16 +144,31 @@ public class YambaService extends IntentService {
       rows.add(cv);
     }
 
-    getContentResolver().bulkInsert(YambaContract.Timeline.URI, (ContentValues[]) rows.toArray());
+    int n = rows.size();
+    if (n <= 0)
+      return;
+
+    ContentValues[] vals = new ContentValues[n];
+    getContentResolver().bulkInsert(YambaContract.Timeline.URI, rows.toArray(vals));
   }
 
   private long getLatestStatusTime() {
-    Cursor cursor = getContentResolver().query(YambaContract.Timeline.URI,
-        new String[] { YambaContract.Timeline.Columns.MAX_TIMESTAMP }, null, null, null);
+    Cursor c = null;
+    try {
+      c = getContentResolver().query(
+              YambaContract.Timeline.URI,
+              new String[] { YambaContract.Timeline.Columns.MAX_TIMESTAMP },
+              null, null, null);
 
-    return cursor.getCount() == 0
-        ? Integer.MIN_VALUE
-        : cursor.getLong(cursor.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
+      return (!c.moveToNext())
+              ? Long.MIN_VALUE
+              : c.getLong(
+                      c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
+    } finally {
+      if (null != c) {
+        c.close();
+      }
+    }
   }
 
   private void postStatus(Intent i) {
