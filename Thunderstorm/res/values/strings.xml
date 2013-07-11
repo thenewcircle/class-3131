@@ -10,5 +10,8 @@
     <string name="thunderstorm_simulator_2000">Thunderstorm Simulator 2000!</string>
     <string name="my_status_message">Ben Franklin</string>
     <string name="your_name">"Your Name: "</string>
+    <string name="post_failed">"Failed."</string>
+    <string name="post_succeeded">"Succeeded."</string>
+    
 
 </resources>
