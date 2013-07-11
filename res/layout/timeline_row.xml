@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
         android:id="@+id/status_timestamp"
@@ -17,13 +18,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/status_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/status_user"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
