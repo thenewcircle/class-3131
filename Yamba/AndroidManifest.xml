@@ -26,6 +26,11 @@
             </intent-filter>
         </activity>
         <service android:name=".svc.YambaService"/>
+        
+        <provider
+            android:exported="false"
+            android:authorities="com.marakana.android.yamba.timeline"
+            android:name=".data.YambaProvider" />
     </application>
 
 </manifest>

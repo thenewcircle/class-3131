@@ -15,22 +15,27 @@
  */
 package com.marakana.android.yamba.svc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.marakana.android.yamba.R;
+import com.marakana.android.yamba.YambaContract;
 import com.marakana.android.yamba.clientlib.YambaClient;
 import com.marakana.android.yamba.clientlib.YambaClient.Status;
 import com.marakana.android.yamba.clientlib.YambaClientException;
+import com.marakana.android.yamba.data.YambaDbHelper;
 
 
 /**
@@ -142,8 +147,36 @@ public class YambaService extends IntentService {
             Log.e(TAG, "Post failed: " + e, e);
             return;
         }
+
+       long latest = getLatestStatusTime();
+
+        List<ContentValues> rows = new ArrayList<ContentValues>();
         for (Status status: timeline) {
-            Log.d(TAG, "Status: " + status.getUser() + ": " + status.getMessage());
+            long t = status.getCreatedAt().getTime();
+            if (t < latest) { continue; }
+
+            ContentValues cv = new ContentValues();
+            cv.put(YambaDbHelper.COL_ID, Long.valueOf(status.getId()));
+            cv.put(YambaDbHelper.COL_CREATED_AT, Long.valueOf(t));
+            cv.put(YambaDbHelper.COL_USER, status.getUser());
+            cv.put(YambaDbHelper.COL_STATUS, status.getMessage());
+            rows.add(cv);
         }
+
+        getContentResolver()
+            .bulkInsert(YambaContract.Timeline.URI, (ContentValues[]) rows.toArray());
+    }
+
+    private long getLatestStatusTime() {
+        Cursor c = getContentResolver().query(
+                    YambaContract.Timeline.URI,
+                    new String[] { YambaContract.Timeline.Columns.MAX_TIMESTAMP },
+                    null,
+                    null,
+                    null);
+
+        return (!c.moveToNext())
+                ? Integer.MIN_VALUE
+                : c.getLong(c.getColumnIndex(YambaContract.Timeline.Columns.MAX_TIMESTAMP));
     }
 }
