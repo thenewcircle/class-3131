@@ -32,12 +32,12 @@ public class YambaContract {
         public static final Uri URI = BASE_URI.buildUpon().appendPath(TABLE).build();
 
         public static class Columns {
-            public static String ID = BaseColumns._ID;
-            public static String USER = "user";
-            public static String STATUS = "status";
-            public static String CREATED_AT = "created_at";
+            public static final String ID = BaseColumns._ID;
+            public static final String USER = "user";
+            public static final String STATUS = "status";
+            public static final String CREATED_AT = "created_at";
 
-            public static String MAX_TIMESTAMP = "maxts";
+            public static final String MAX_TIMESTAMP = "maxts";
         }
     }
 }
