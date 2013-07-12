@@ -16,7 +16,6 @@ public class BaseActivity extends Activity {
 
     ActionBar bar = getActionBar();
     bar.setHomeButtonEnabled(true);
-    bar.setDisplayHomeAsUpEnabled(true);
   }
 
   @Override
