@@ -79,6 +79,7 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
         i.putExtra(
                 TimelineDetailFragment.PARAM_TEXT,
                 c.getString(c.getColumnIndex(YambaContract.Timeline.Columns.STATUS)));
+
         startActivity(i);
     }
 
