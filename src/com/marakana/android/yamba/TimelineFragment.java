@@ -3,6 +3,7 @@ package com.marakana.android.yamba;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cursor> {
@@ -64,6 +66,15 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
   }
 
   @Override
+  public void onListItemClick(ListView l, View v, int p, long id) {
+    Cursor c = (Cursor) l.getItemAtPosition(p);
+    Intent i = new Intent(getActivity(), TimelineDetailActivity.class);
+    i.putExtra(TimelineDetailFragment.PARAM_STATUS,
+            c.getString(c.getColumnIndex(YambaContract.Timeline.Columns.STATUS)));
+    startActivity(i);
+  }
+
+  @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
     return new CursorLoader(getActivity(), YambaContract.Timeline.URI, PROJECTION, null, null,
             YambaContract.Timeline.Columns.CREATED_AT + " DESC");
@@ -78,4 +89,5 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
   public void onLoaderReset(Loader<Cursor> cursor) {
     ((SimpleCursorAdapter) getListAdapter()).swapCursor(null);
   }
+
 }

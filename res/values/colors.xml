@@ -5,4 +5,5 @@
     <color name="green">#00BB00</color>
     <color name="yellow">#BBBB00</color>
     <color name="red">#EE0000</color>
+    <color name="fog">#33ffffff</color>
 </resources>

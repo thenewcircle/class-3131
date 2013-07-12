@@ -13,5 +13,6 @@
     <string name="menu_status">new status</string>
     <string name="menu_prefs">preferences</string>
     <string name="menu_about">about</string>
+    <string name="title_activity_timeline_detail">details</string>
 
 </resources>
