@@ -3,12 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:baselineAligned="false"
     android:background="@drawable/background">
 
     <fragment
         android:id="@+id/fragment_timeline"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         class="com.marakana.android.yamba.TimelineFragment" />
 
+    <FrameLayout
+        android:id="@+id/timeline_detail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 </LinearLayout>

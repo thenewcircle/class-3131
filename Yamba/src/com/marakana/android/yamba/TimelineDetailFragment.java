@@ -30,11 +30,30 @@ import android.widget.TextView;
  */
 public class TimelineDetailFragment extends Fragment {
     public static final String PARAM_TEXT = "TimelineDetailFragment.DETAIL";
+    
+    public static TimelineDetailFragment newInstace(String detail) {
+    	TimelineDetailFragment frag = new TimelineDetailFragment();
+    	if (null != detail) {
+    		Bundle b = new Bundle();
+    		b.putString(PARAM_TEXT, detail);
+    		frag.setArguments(b);
+    	}
+		return frag;
+    }
 
     private TextView contents;
     private String details;
+    
+    
 
     @Override
+	public void onCreate(Bundle state) {
+		super.onCreate(state);
+		if (null == state) { state = getArguments(); }
+		setContent(state);
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
         contents = (TextView) inflater.inflate(R.layout.fragment_timeline_detail, parent, false);
         //setContent(state);
