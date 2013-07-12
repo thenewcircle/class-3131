@@ -9,7 +9,10 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--
+    Use with boot receiver
+    uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /
+    -->
 
     <application
         android:name=".YambaApplication"
@@ -17,10 +20,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name=".StatusActivity"
-            android:label="@string/label_status" >
-        </activity>
         <activity
             android:name=".TimelineActivity"
             android:label="@string/app_name" >
@@ -30,6 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".StatusActivity"
+            android:label="@string/label_status" />
 
         <service android:name=".svc.YambaService" />
 
@@ -38,11 +40,13 @@
             android:authorities="com.marakana.android.yamba.timeline"
             android:exported="false" />
 
+        <!--
         <receiver android:name=".svc.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.ON_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        -->
     </application>
 
 </manifest>
