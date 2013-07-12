@@ -7,8 +7,6 @@
     <string name="submit">Submit</string>
     <string name="post_failed">Could not post your status. Please try again later</string>
     <string name="post_succeeded">Status successfully posted!</string>
-    <string name="status_max">140</string>
-    <string name="status_warn">10</string>
-    <string name="status_err">0</string>
+    <string name="title_activity_timeline">TimelineActivity</string>
 
 </resources>

@@ -7,33 +7,37 @@
     <uses-sdk
         a:minSdkVersion="15"
         a:targetSdkVersion="17" />
-    
-    <uses-permission a:name="android.permission.INTERNET"/>
+
+    <uses-permission a:name="android.permission.INTERNET" />
 
     <application
+        a:name="com.marakana.android.yamba.YambaApp"
         a:allowBackup="true"
         a:icon="@drawable/ic_launcher"
         a:label="@string/app_name"
-        a:theme="@style/AppTheme"
-        a:name=".YambaApp" >
+        a:theme="@style/AppTheme" >
+
         <activity
-            a:name=".StatusActivity"
-            a:label="@string/app_name" >
+            a:name="com.marakana.android.yamba.TimelineActivity"
+            a:label="@string/title_activity_timeline" >
             <intent-filter>
                 <action a:name="android.intent.action.MAIN" />
-
                 <category a:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service 
-            a:name=".svc.YambaService"></service>
         
-        <provider 
-            a:exported="false"
+        <activity
+            a:name="com.marakana.android.yamba.StatusActivity"
+            a:label="@string/app_name" >
+        </activity>
+
+        <service a:name="com.marakana.android.yamba.svc.YambaService" >
+        </service>
+
+        <provider
+            a:name="com.marakana.android.yamba.data.YambaProvider"
             a:authorities="com.marakana.android.yamba.timeline"
-            a:name=".data.YambaProvider" />
-        
+            a:exported="false" />
     </application>
-    
 
 </manifest>
