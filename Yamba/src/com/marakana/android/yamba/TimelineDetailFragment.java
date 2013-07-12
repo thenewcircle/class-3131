@@ -56,7 +56,7 @@ public class TimelineDetailFragment extends Fragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
         contents = (TextView) inflater.inflate(R.layout.fragment_timeline_detail, parent, false);
-        //setContent(state);
+        setContent(state);
         return contents;
     }
 
