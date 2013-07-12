@@ -16,7 +16,7 @@ import com.marakana.android.yamba.svc.YambaService;
 
 public class StatusFragment extends Fragment {
 
-  private final String LOG_TAG = StatusActivity.class.getSimpleName();
+  private final String LOG_TAG = StatusFragment.class.getSimpleName();
 
   private int statusMax;
   private int statusWarn;
@@ -32,7 +32,6 @@ public class StatusFragment extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     if (BuildConfig.DEBUG)
       Log.d(LOG_TAG, "onCreate");
 
@@ -46,7 +45,7 @@ public class StatusFragment extends Fragment {
     yellow = res.getColor(R.color.yellow);
     red = res.getColor(R.color.red);
 
-    View view = super.onCreateView(inflater, parent, savedInstanceState);
+    View view = inflater.inflate(R.layout.fragment_status, parent, false);
 
     count = (TextView) view.findViewById(R.id.status_count);
     status = (TextView) view.findViewById(R.id.status_text);
@@ -56,6 +55,7 @@ public class StatusFragment extends Fragment {
     submit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        Log.d("TEMP", "onClick");
         postStatus();
       }
     });

@@ -1,11 +1,10 @@
 package com.marakana.android.yamba;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.marakana.android.yamba.svc.YambaService;
 
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends BaseActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

@@ -11,13 +11,6 @@
     tools:context=".StatusActivity" >
 
     <TextView
-        style="@style/yamba_title"
-        a:layout_width="wrap_content"
-        a:layout_height="wrap_content"
-        a:layout_gravity="center_horizontal"
-        a:text="@string/status" />
-
-    <TextView
         style="@style/yamba_text"
         a:id="@+id/status_count"
         a:layout_width="wrap_content"
