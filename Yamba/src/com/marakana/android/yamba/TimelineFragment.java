@@ -1,8 +1,12 @@
 package com.marakana.android.yamba;
 
+import com.marakana.android.yamba.svc.YambaService;
+
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,6 +14,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -47,7 +52,6 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
         }
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         return new CursorLoader(
@@ -69,8 +73,19 @@ public class TimelineFragment extends ListFragment implements LoaderCallbacks<Cu
         ((SimpleCursorAdapter) getListAdapter()).swapCursor(null);
     }
 
-
     @Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+    	// getListView();
+		Cursor c = (Cursor) l.getItemAtPosition(position);
+		
+		String status = c.getString(c.getColumnIndex(YambaContract.Timeline.Columns.STATUS));
+		
+        Intent i = new Intent(getActivity(), TimelineDetailActivity.class);
+        i.putExtra(TimelineDetailFragment.PARAM_TEXT, status);
+        getActivity().startService(i);
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle state) {
         View v = super.onCreateView(inflater, parent, state);
 
