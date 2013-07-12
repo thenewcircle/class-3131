@@ -9,5 +9,10 @@
     <string name="button_submit">Submit</string>
     <string name="post_failed">Post failed!</string>
     <string name="post_succeeded">Post succeeded!</string>
+    <string name="menu_timeline">Timeline</string>
+    <string name="menu_status">Status</string>
+    <string name="menu_about">About</string>
+    <string name="menu_prefs">Preferences</string>
+    <string name="about">Welcome to my awesome app, bye!</string>
     
 </resources>

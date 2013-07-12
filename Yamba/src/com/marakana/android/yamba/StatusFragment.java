@@ -2,7 +2,7 @@ package com.marakana.android.yamba;
 
 import com.marakana.android.yamba.svc.YambaService;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class StatusFragment extends ListFragment {
+public class StatusFragment extends Fragment {
     private static final String TAG = "STATUS";
 
     private TextView count;
